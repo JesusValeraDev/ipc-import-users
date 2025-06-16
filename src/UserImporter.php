@@ -5,38 +5,28 @@ declare(strict_types=1);
 namespace Ipc;
 
 use Ipc\IO\ConsolePrinter;
-use Ipc\Providers\CsvProvider;
-use Ipc\Providers\WebProvider;
+use Ipc\Providers\UserProvider;
 
-final class UserImporter
+final readonly class UserImporter
 {
-    private CsvProvider $csvProvider;
-    private WebProvider $webProvider;
-    private ConsolePrinter $consolePrinter;
-
-    public function __construct()
-    {
-        $this->csvProvider = new CsvProvider();
-        $this->webProvider = new WebProvider();
-        $this->consolePrinter = new ConsolePrinter();
+    /**
+     * @param list<UserProvider> $providers
+     */
+    public function __construct(
+        private array $providers,
+        private ConsolePrinter $printer = new ConsolePrinter(),
+    ) {
     }
 
     public function run(): string
     {
-        $csv_provider = $this->csvProvider->handle();
-        $web_provider = $this->webProvider->handle();
+        $users = [];
+        foreach ($this->providers as $provider) {
+            $users[] = $provider->handle();
+        }
 
-        /**
-         *  0: string|int (id)
-         *  1: string     (gender)
-         *  2: string     (name)
-         *  3: string     (country)
-         *  4: string     (postal_code)
-         *  5: string     (email)
-         *  6: int        (age)
-         */
-        $providers = array_merge($csv_provider, $web_provider); // merge arrays
+        $users = array_merge(...$users);
 
-        return $this->consolePrinter->printUsers($providers);
+        return $this->printer->printUsers($users);
     }
 }
