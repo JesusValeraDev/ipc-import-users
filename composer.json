@@ -1,0 +1,19 @@
+{
+    "name": "jesus/ipc",
+    "require": {
+        "php": "^8.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ipc\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\Ipc\\": "tests/"
+        }
+    }
+}
