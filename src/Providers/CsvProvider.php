@@ -4,25 +4,48 @@ declare(strict_types=1);
 
 namespace Ipc\Providers;
 
+use DateMalformedStringException;
+use Ipc\Domain\User;
+
 final class CsvProvider
 {
-    public function csvProvider(): array
+    /**
+     * @return list<User>
+     * @throws DateMalformedStringException
+     */
+    public function handle(): array
     {
-        // Parse CSV file
         $currentDirectory = dirname(__DIR__);
         $fileLocation = file($currentDirectory . '/../users.csv');
 
-        // Fields: id, gender, name, country, postcode, email, birthdate
-        $csv_provider = array_map('str_getcsv', $fileLocation);
+        $csvContent = array_map('str_getcsv', $fileLocation);
 
-        array_shift($csv_provider); // Remove header column
-
-        array_walk($csv_provider, function (&$a) {
-            $now = new \DateTime();
-            $itemDate = new \DateTime($a[6]);
-            $a[6] = $itemDate->diff($now)->y;
+        /**
+         * @var list<array{id: string, gender: string, name: string, country: string, postcode: string, email: string, birthdate: string}> $csvContent
+         */
+        array_walk($csvContent, static function(&$a) use ($csvContent) {
+            $a = array_combine($csvContent[0], $a);
         });
 
-        return $csv_provider;
+        array_shift($csvContent); // Remove header column
+
+        /** @var list<User> $users */
+        $users = [];
+        foreach ($csvContent as $row) {
+            $now = new \DateTime();
+            $itemDate = new \DateTime($row['birthdate']);
+
+            $users[] = new User(
+                (int) $row['id'],
+                $row['gender'],
+                $row['name'],
+                $row['country'],
+                $row['postcode'],
+                $row['email'],
+                $itemDate->diff($now)->y,
+            );
+        }
+
+        return $users;
     }
 }

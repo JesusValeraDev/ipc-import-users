@@ -23,7 +23,7 @@ final class UserImporter
 
     public function run(): string
     {
-        $csv_provider = $this->csvProvider->csvProvider();
+        $csv_provider = $this->csvProvider->handle();
         $web_provider = $this->webProvider->webProvider();
 
         /**
