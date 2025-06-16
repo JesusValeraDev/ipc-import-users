@@ -7,18 +7,20 @@ namespace Ipc\Providers;
 use DateMalformedStringException;
 use Ipc\Domain\User;
 
-final class CsvProvider implements UserProvider
+final readonly class CsvProvider implements UserProvider
 {
+    public function __construct(
+        private string $fileLocation,
+    ) {
+    }
+
     /**
      * @return list<User>
      * @throws DateMalformedStringException
      */
     public function handle(): array
     {
-        $currentDirectory = dirname(__DIR__);
-        $fileLocation = file($currentDirectory . '/../users.csv');
-
-        $csvContent = array_map('str_getcsv', $fileLocation);
+        $csvContent = array_map('str_getcsv', file($this->fileLocation));
 
         /**
          * @var list<array{id: string, gender: string, name: string, country: string, postcode: string, email: string, birthdate: string}> $csvContent

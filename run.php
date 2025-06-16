@@ -10,7 +10,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 $importer = new \Ipc\UserImporter(
     providers: [
-        new CsvProvider(),
+        new CsvProvider(__DIR__ . '/users.csv'),
         new WebProvider(),
     ],
     printer: new ConsolePrinter()
