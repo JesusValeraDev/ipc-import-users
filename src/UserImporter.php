@@ -4,13 +4,22 @@ declare(strict_types=1);
 
 namespace Ipc;
 
+use Ipc\Providers\CsvProvider;
+
 final class UserImporter
 {
     private const string USER_URL = 'https://randomuser.me/api/?inc=gender,name,email,location,dob&results=5&seed=a9b25cd955e2037h';
 
+    private CsvProvider $csvProvider;
+
+    public function __construct()
+    {
+        $this->csvProvider = new CsvProvider();
+    }
+
     public function run(): string
     {
-        $csv_provider = $this->csvProvider();
+        $csv_provider = $this->csvProvider->csvProvider();
         $web_provider = $this->webProvider();
 
         /**
