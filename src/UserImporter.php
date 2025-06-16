@@ -5,22 +5,23 @@ declare(strict_types=1);
 namespace Ipc;
 
 use Ipc\Providers\CsvProvider;
+use Ipc\Providers\WebProvider;
 
 final class UserImporter
 {
-    private const string USER_URL = 'https://randomuser.me/api/?inc=gender,name,email,location,dob&results=5&seed=a9b25cd955e2037h';
-
     private CsvProvider $csvProvider;
+    private WebProvider $webProvider;
 
     public function __construct()
     {
         $this->csvProvider = new CsvProvider();
+        $this->webProvider = new WebProvider();
     }
 
     public function run(): string
     {
         $csv_provider = $this->csvProvider->csvProvider();
-        $web_provider = $this->webProvider();
+        $web_provider = $this->webProvider->webProvider();
 
         /**
          *  0: string|int (id)
@@ -34,52 +35,6 @@ final class UserImporter
         $providers = array_merge($csv_provider, $web_provider); // merge arrays
 
         return $this->printUsers($providers);
-    }
-
-    private function csvProvider(): array
-    {
-        // Parse CSV file
-        $currentDirectory = dirname(__DIR__);
-        $fileLocation = file($currentDirectory . '/users.csv');
-
-        // Fields: id, gender, name, country, postcode, email, birthdate
-        $csv_provider = array_map(fn ($s) => str_getcsv($s, ',', '"', "\\"), $fileLocation);
-        array_shift($csv_provider); // Remove header column
-
-        array_walk($csv_provider, function (&$a) {
-            $now = new \DateTime();
-            $itemDate = new \DateTime($a[6]);
-            $a[6] = $itemDate->diff($now)->y;
-        });
-
-        return $csv_provider;
-    }
-
-    private function webProvider(): array
-    {
-        // Parse URL content
-        $url = self::USER_URL;
-        $web_provider = json_decode(file_get_contents($url))->results;
-        $pr = [];
-        array_walk($pr, function (&$a) use ($web_provider) {
-            $a = array_combine($web_provider[0], $a);
-        });
-
-        $b = [];
-        foreach ($web_provider as $index => $item) {
-            $id = 100000000000;
-            $b[] = [
-                $id + $index,
-                $item->gender,
-                $item->name->first . ' ' . $item->name->last,
-                $item->location->country,
-                $item->location->postcode,
-                $item->email,
-                $item->dob->age
-            ];
-        }
-
-        return $b;
     }
 
     private function printUsers(array $providers): string
