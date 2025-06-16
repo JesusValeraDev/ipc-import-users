@@ -24,7 +24,7 @@ final class UserImporter
     public function run(): string
     {
         $csv_provider = $this->csvProvider->handle();
-        $web_provider = $this->webProvider->webProvider();
+        $web_provider = $this->webProvider->handle();
 
         /**
          *  0: string|int (id)

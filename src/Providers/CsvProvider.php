@@ -7,7 +7,7 @@ namespace Ipc\Providers;
 use DateMalformedStringException;
 use Ipc\Domain\User;
 
-final class CsvProvider
+final class CsvProvider implements UserProvider
 {
     /**
      * @return list<User>

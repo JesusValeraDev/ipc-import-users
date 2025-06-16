@@ -6,7 +6,7 @@ namespace Ipc\Providers;
 
 use Ipc\Domain\User;
 
-final class WebProvider
+final class WebProvider implements UserProvider
 {
     private const string USER_URL = 'https://randomuser.me/api/?inc=gender,name,email,location,dob&results=5&seed=a9b25cd955e2037h';
 
