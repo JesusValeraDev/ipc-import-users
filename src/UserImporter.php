@@ -10,18 +10,44 @@ final class UserImporter
 
     public function run(): string
     {
+        $csv_provider = $this->csvProvider();
+        $web_provider = $this->webProvider();
+
+        /**
+         *  0: string|int (id)
+         *  1: string     (gender)
+         *  2: string     (name)
+         *  3: string     (country)
+         *  4: string     (postal_code)
+         *  5: string     (email)
+         *  6: int        (age)
+         */
+        $providers = array_merge($csv_provider, $web_provider); // merge arrays
+
+        return $this->printUsers($providers);
+    }
+
+    private function csvProvider(): array
+    {
         // Parse CSV file
         $currentDirectory = dirname(__DIR__);
         $fileLocation = file($currentDirectory . '/users.csv');
+
         // Fields: id, gender, name, country, postcode, email, birthdate
         $csv_provider = array_map(fn ($s) => str_getcsv($s, ',', '"', "\\"), $fileLocation);
         array_shift($csv_provider); // Remove header column
+
         array_walk($csv_provider, function (&$a) {
             $now = new \DateTime();
             $itemDate = new \DateTime($a[6]);
             $a[6] = $itemDate->diff($now)->y;
         });
 
+        return $csv_provider;
+    }
+
+    private function webProvider(): array
+    {
         // Parse URL content
         $url = self::USER_URL;
         $web_provider = json_decode(file_get_contents($url))->results;
@@ -44,18 +70,11 @@ final class UserImporter
             ];
         }
 
-        /**
-         *  0: string|int (id)
-         *  1: string     (gender)
-         *  2: string     (name)
-         *  3: string     (country)
-         *  4: string     (postal_code)
-         *  5: string     (email)
-         *  6: int        (age)
-         */
-        $providers = array_merge($csv_provider, $b); // merge arrays
+        return $b;
+    }
 
-
+    private function printUsers(array $providers): string
+    {
         // Print users
         $return = str_repeat('*', 89) . PHP_EOL;
         $return .= "* ID\t\t* COUNTRY\t* NAME\t\t* EMAIL\t\t\t\t* AGE\t*" . PHP_EOL;
