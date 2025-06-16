@@ -4,34 +4,35 @@ declare(strict_types=1);
 
 namespace Ipc\Providers;
 
+use Ipc\Domain\User;
+
 final class WebProvider
 {
     private const string USER_URL = 'https://randomuser.me/api/?inc=gender,name,email,location,dob&results=5&seed=a9b25cd955e2037h';
 
-    public function webProvider(): array
+    /**
+     * @return list<User>
+     */
+    public function handle(): array
     {
-        // Parse URL content
-        $url = self::USER_URL;
-        $web_provider = json_decode(file_get_contents($url))->results;
-        $pr = [];
-        array_walk($pr, function (&$a) use ($web_provider) {
-            $a = array_combine($web_provider[0], $a);
-        });
+        $web_provider = json_decode(file_get_contents(self::USER_URL))->results;
 
-        $b = [];
+        /** @var list<User> $users */
+        $users = [];
+
         foreach ($web_provider as $index => $item) {
             $id = 100000000000;
-            $b[] = [
+            $users[] = new User(
                 $id + $index,
                 $item->gender,
                 $item->name->first . ' ' . $item->name->last,
                 $item->location->country,
-                $item->location->postcode,
+                (string) $item->location->postcode,
                 $item->email,
                 $item->dob->age
-            ];
+            );
         }
 
-        return $b;
+        return $users;
     }
 }
