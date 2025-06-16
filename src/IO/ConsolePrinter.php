@@ -6,37 +6,59 @@ namespace Ipc\IO;
 
 use Ipc\Domain\User;
 
-final class ConsolePrinter
+final class ConsolePrinter implements Printer
 {
-    public function printUsers(array $providers): string
+    /**
+     * @param list<User> $users
+     */
+    public function printUsers(array $users): string
     {
-        $return = str_repeat('*', 89) . PHP_EOL;
-        $return .= "* ID\t\t* COUNTRY\t* NAME\t\t* EMAIL\t\t\t\t* AGE\t*" . PHP_EOL;
-        $return .= str_repeat('*', 89) . PHP_EOL;
-        foreach ($providers as $item) {
-            if ($item instanceof User) {
-                $return .= sprintf(
-                        "* %s\t* %s\t* %s\t* %s\t* %s\t*",
-                        $item->id,
-                        $item->country,
-                        $item->name,
-                        $item->email,
-                        $item->age
-                    ) . PHP_EOL;
-            } else {
-                $return .= sprintf(
-                        "* %s\t* %s\t* %s\t* %s\t* %s\t*",
-                        $item[0],
-                        $item[3],
-                        $item[2],
-                        $item[5],
-                        $item[6]
-                    ) . PHP_EOL;
-            }
-        }
-        $return .= str_repeat('*', 89) . PHP_EOL;
-        $return .= count($providers) . ' users in total!' . PHP_EOL;
+        $return = $this->printBlock();
+
+        $return .= $this->header();
+
+        $return .= $this->printBlock();
+
+        $return .= $this->printUserColumns($users);
+
+        $return .= $this->printBlock();
+
+        $return .= $this->printTotalUsers($users);
 
         return $return;
+    }
+
+    private function printBlock(): string
+    {
+        return str_repeat('*', 89) . PHP_EOL;
+    }
+
+    private function header(): string
+    {
+        return "* ID\t\t* COUNTRY\t* NAME\t\t* EMAIL\t\t\t\t* AGE\t*" . PHP_EOL;
+    }
+
+    private function printTotalUsers(array $providers): string
+    {
+        return count($providers) . ' users in total!' . PHP_EOL;
+    }
+
+    /**
+     * @param list<User> $providers
+     */
+    private function printUserColumns(array $providers): string
+    {
+        $column = '';
+        foreach ($providers as $item) {
+            $column .= sprintf(
+                    "* %s\t* %s\t* %s\t* %s\t* %s\t*",
+                    $item->id,
+                    $item->country,
+                    $item->name,
+                    $item->email,
+                    $item->age
+                ) . PHP_EOL;
+        }
+        return $column;
     }
 }

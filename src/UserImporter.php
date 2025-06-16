@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ipc;
 
-use Ipc\IO\ConsolePrinter;
+use Ipc\IO\Printer;
 use Ipc\Providers\UserProvider;
 
 final readonly class UserImporter
@@ -14,7 +14,7 @@ final readonly class UserImporter
      */
     public function __construct(
         private array $providers,
-        private ConsolePrinter $printer = new ConsolePrinter(),
+        private Printer $printer,
     ) {
     }
 
