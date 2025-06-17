@@ -6,16 +6,20 @@ namespace Ipc\Providers;
 
 use Ipc\Domain\User;
 
-final class WebProvider implements UserProvider
+final readonly class WebProvider implements UserProvider
 {
-    private const string USER_URL = 'https://randomuser.me/api/?inc=gender,name,email,location,dob&results=5&seed=a9b25cd955e2037h';
+    public function __construct(
+        private string $userUrl,
+    ) {
+    }
 
     /**
      * @return list<User>
      */
     public function handle(): array
     {
-        $web_provider = json_decode(file_get_contents(self::USER_URL))->results;
+        $content = file_get_contents($this->userUrl);
+        $web_provider = json_decode($content)->results;
 
         /** @var list<User> $users */
         $users = [];
