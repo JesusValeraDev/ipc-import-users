@@ -20,7 +20,7 @@ final readonly class CsvProvider implements UserProvider
      */
     public function handle(): array
     {
-        $csvContent = array_map('str_getcsv', file($this->fileLocation));
+        $csvContent = array_map(fn ($s) => str_getcsv($s, ',', '"', "\\"), file($this->fileLocation));
 
         /**
          * @var list<array{id: string, gender: string, name: string, country: string, postcode: string, email: string, birthdate: string}> $csvContent
