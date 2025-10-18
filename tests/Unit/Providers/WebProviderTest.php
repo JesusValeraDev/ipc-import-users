@@ -18,8 +18,8 @@ final class WebProviderTest extends TestCase
 
         $this->assertEquals(
             [
-                new User(100000000000, 'male', 'Benedikt Brun', 'Switzerland', '1798', 'benedikt.brun@example.com', 55),
-                new User(100000000001, 'male', 'Kurt Price', 'Ireland', '29007', 'kurt.price@example.com', 57),
+                new User(100000000000, 'male', 'Benedikt Brun', 'Switzerland', '1798', 'benedikt.brun@example.com', 56),
+                new User(100000000001, 'male', 'Kurt Price', 'Ireland', '29007', 'kurt.price@example.com', 58),
             ],
             $expected
         );

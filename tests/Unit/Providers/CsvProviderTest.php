@@ -18,7 +18,7 @@ final class CsvProviderTest extends TestCase
         $this->assertEquals(
             [
                 new User(123, 'male', 'Lukas Schmidt', 'Germany', '10780', 'lukas.shmidt@example.com', 35),
-                new User(456, 'female', 'Maria Fischer', 'Germany', '15010', 'maria.fischer@example.com', 19),
+                new User(456, 'female', 'Maria Fischer', 'Germany', '15010', 'maria.fischer@example.com', 20),
             ],
             $expected
         );
