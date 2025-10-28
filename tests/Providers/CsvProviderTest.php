@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Ipc\Unit\Providers;
+namespace Test\Ipc\Providers;
 
 use Ipc\Domain\User;
 use Ipc\Providers\CsvProvider;

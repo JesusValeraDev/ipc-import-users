@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Ipc\Functional;
+namespace Test\Ipc;
 
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +11,7 @@ final class UserImporterTest extends TestCase
     public function test_users_are_imported_correctly(): void
     {
         ob_start();
-        require_once dirname(__DIR__) . '/../run.php';
+        require_once __DIR__ . '/../run.php';
         $response = ob_get_clean();
 
         self::assertSame($this->expectedOutput(), $response);
