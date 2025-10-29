@@ -6,12 +6,12 @@ namespace Ipc\IO;
 
 use Ipc\Domain\User;
 
-final class ConsolePrinter implements Printer
+final class ConsoleTablePrinter implements Printer
 {
     /**
      * @param list<User> $users
      */
-    public function printUsers(array $users): string
+    public function printUsers(array $users): void
     {
         $return = $this->printBlock();
 
@@ -25,7 +25,7 @@ final class ConsolePrinter implements Printer
 
         $return .= $this->printTotalUsers($users);
 
-        return $return;
+        echo $return;
     }
 
     private function printBlock(): string

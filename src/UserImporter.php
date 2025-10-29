@@ -18,7 +18,7 @@ final readonly class UserImporter
     ) {
     }
 
-    public function run(): string
+    public function run(): void
     {
         $users = [];
         foreach ($this->providers as $provider) {
@@ -27,6 +27,6 @@ final readonly class UserImporter
 
         $users = array_merge(...$users);
 
-        return $this->printer->printUsers($users);
+        $this->printer->printUsers($users);
     }
 }

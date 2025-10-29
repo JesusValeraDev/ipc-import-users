@@ -11,5 +11,5 @@ interface Printer
     /**
      * @param list<User> $users
      */
-    public function printUsers(array $users): string;
+    public function printUsers(array $users): void;
 }

@@ -2,18 +2,17 @@
 
 declare(strict_types=1);
 
-use Ipc\IO\ConsolePrinter;
-use Ipc\Providers\CsvProvider;
-use Ipc\Providers\WebProvider;
-
 require __DIR__ . '/vendor/autoload.php';
+
+$printer = new \Ipc\IO\ConsoleTablePrinter();
+//$printer = new \Ipc\IO\ConsoleJsonPrinter();
 
 $importer = new \Ipc\UserImporter(
     providers: [
-        new CsvProvider(__DIR__ . '/users.csv'),
-        new WebProvider('https://randomuser.me/api/?inc=gender,name,email,location,dob&results=5&seed=a9b25cd955e2037h'),
+        new Ipc\Providers\CsvProvider(__DIR__ . '/users.csv', new \Ipc\Time\Clock()),
+        new Ipc\Providers\WebProvider('https://randomuser.me/api/?inc=gender,name,email,location,dob&results=5&seed=a9b25cd955e2037h'),
     ],
-    printer: new ConsolePrinter()
+    printer: $printer,
 );
 
-echo $importer->run();
+$importer->run();
