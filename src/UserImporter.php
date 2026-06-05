@@ -16,6 +16,7 @@ final class UserImporter
         // Fields: id, gender, name, country, postcode, email, birthdate
         $csv_provider = array_map(fn ($s) => str_getcsv($s, ',', '"', "\\"), $fileLocation);
         array_shift($csv_provider); // Remove header column
+        //...
         array_walk($csv_provider, function (&$a) {
             $now = new \DateTime();
             $itemDate = new \DateTime($a[6]);
@@ -49,7 +50,7 @@ final class UserImporter
          *  1: string     (gender)
          *  2: string     (name)
          *  3: string     (country)
-         *  4: string     (postal_code)
+         *  4: string|int (postal_code)
          *  5: string     (email)
          *  6: int        (age)
          */
