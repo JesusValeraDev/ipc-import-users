@@ -13,15 +13,14 @@ final class UserImporter
         // Parse CSV file
         $currentDirectory = dirname(__DIR__);
         $fileLocation = file($currentDirectory . '/users.csv');
-        // Fields: id, gender, name, country, postcode, email, birthdate
-        $csv_provider = array_map(fn ($s) => str_getcsv($s, ',', '"', "\\"), $fileLocation);
+        $csv_provider = array_map(fn ($s) => str_getcsv($s, ',', '"', ''), $fileLocation);
         array_shift($csv_provider); // Remove header column
-        //...
-        array_walk($csv_provider, function (&$a) {
+        $a = [];
+        foreach ($csv_provider as $item) {
             $now = new \DateTime();
-            $itemDate = new \DateTime($a[6]);
-            $a[6] = $itemDate->diff($now)->y;
-        });
+            $itemDate = new \DateTime($item[6]);
+            $a[] = [$item[0], $item[1], $item[2], $item[3], $item[4], $item[5], $itemDate->diff($now)->y];
+        }
 
         // Parse URL content
         $url = self::USER_URL;
@@ -35,13 +34,10 @@ final class UserImporter
         foreach ($web_provider as $index => $item) {
             $id = 100000000000;
             $b[] = [
-                $id + $index,
-                $item->gender,
+                $id + $index, $item->gender,
                 $item->name->first . ' ' . $item->name->last,
-                $item->location->country,
-                $item->location->postcode,
-                $item->email,
-                $item->dob->age
+                $item->location->country, $item->location->postcode,
+                $item->email, $item->dob->age
             ];
         }
 
@@ -54,8 +50,7 @@ final class UserImporter
          *  5: string     (email)
          *  6: int        (age)
          */
-        $providers = array_merge($csv_provider, $b); // merge arrays
-
+        $providers = array_merge($a, $b); // merge arrays
 
         // Print users
         $return = str_repeat('*', 89) . PHP_EOL;
